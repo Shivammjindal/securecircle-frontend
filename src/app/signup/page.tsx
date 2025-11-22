@@ -65,6 +65,8 @@ export default function SignUp(){
         }
 
         const { name, email, password} = data
+
+        let toastId = '';
         
         await authClient.signUp.email({
                 email,
@@ -72,9 +74,10 @@ export default function SignUp(){
                 name,
             }, {
                 onRequest: () => {
-                    toast.loading('Vadidating and Saving Credentials Please Wait')
+                    toastId = toast.loading('Vadidating and Saving Credentials Please Wait')
                 },
                 onSuccess: () => {
+                    toast.dismiss(toastId)
                     toast.success('Sign Up Successfully')
                 },
                 onError: (ctx) => {

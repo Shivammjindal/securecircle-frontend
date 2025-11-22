@@ -31,9 +31,12 @@ export default function Navbar(){
     }, [session])
 
     const handleSignOut = async () => {
-        await authClient.signOut()
-        toast.success('Signed Out Successfully')
-        router.replace('/login')
+        
+        await authClient.signOut().then(() => {
+            toast.success('Signed Out Successfully')
+            return router.replace('/login')
+        })
+
     }
 
     return (
