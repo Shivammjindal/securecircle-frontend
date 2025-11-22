@@ -12,9 +12,13 @@ import {
 import {
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage
 } from "@/components/ui/form"
+import { useTheme } from "next-themes"
 import Navbar from "../components/Navbar"
 import toast from "react-hot-toast"
 import Footer from "../components/Footer"
+import Skeleton from "react-loading-skeleton"
+import { useSession } from "@/lib/auth-client"
+
 
 interface DataProps {
   title: string,
@@ -26,7 +30,13 @@ interface DataProps {
 
 export default function ContributionForm() {
 
+  const session = useSession()
+  const theme = useTheme() || { theme: "light" }
+
+  console.log(theme)
+
   useEffect(() => {
+
     if (typeof window !== "undefined") {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -40,11 +50,20 @@ export default function ContributionForm() {
     }
   }, []);
 
+  useEffect(() => {
+
+    if(session?.data !== null){
+      setPageLoading(false)
+    }
+
+  }, [session])
+
   const lat = useRef<number>(0)
   const lon = useRef<number>(0)
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState<boolean>(true)
   const [result, setResult] = useState<string | null>(null)
 
   const form = useForm<DataProps>({
@@ -160,8 +179,21 @@ export default function ContributionForm() {
   }
 
   return (
-    <div className="bg-cover bg-center">
+    <div className="bg-cover dark:bg-gray-950 bg-center">
+
       <Navbar />
+
+      {pageLoading ? 
+      
+      <div className="dark:bg-gray-900 mt-40 w-80 mx-auto -pb-10 mb-56 lg:w-96">
+        <Skeleton
+          className="rounded-2xl dark:bg-gray-900 h-64 lg:h-72"
+          baseColor="transparent"
+          highlightColor="#D1D5DB"
+        />
+      </div>
+
+      :
       
       <div className="min-h-screen dark:bg-gray-950 bg-cover flex justify-center bg-background p-4">
         <div className="bg-white/60 dark:bg-gray-900 dark:border-gray-950 border-2 h-[23rem] mt-36 border-[#242323] shadow-lg rounded-2xl p-6 w-full max-w-md">
@@ -186,7 +218,6 @@ export default function ContributionForm() {
                 )}
               />
 
-              {/* Card Type */}
               <FormField
                 control={form.control}
                 name="media"
@@ -230,14 +261,12 @@ export default function ContributionForm() {
                 />
               }
               
-              {/* Submit Button */}
               <Button disabled={loading} type="submit" className="w-full bg-blue-700 hover:bg-blue-800 disabled:bg-blue-500 text-white">
                 Submit
               </Button>
             </form>
           </Form>
 
-          {/* Thank You Dialog */}
           {result && <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="min-h-40 dark:bg-gray-900 border border-gray-950">
               <DialogHeader>
@@ -251,7 +280,8 @@ export default function ContributionForm() {
           }
         </div>
       </div>
-      <Footer/>
+      }
+      <Footer/> 
     </div>
   )
 }

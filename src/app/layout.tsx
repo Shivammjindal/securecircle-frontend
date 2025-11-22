@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import toast, { Toaster } from "react-hot-toast"
 import { ThemeProvider } from "./context/ThemeProvider";
+import 'react-loading-skeleton/dist/skeleton.css'
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

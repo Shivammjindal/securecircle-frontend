@@ -42,13 +42,19 @@ export default function SignUp(){
     },[session])
 
     const handleGithubSignIn = async () => {
+        
+        try{
+            await authClient.signIn.social({
+                provider:'github',
+                callbackURL:'/',
+            })
 
-        await authClient.signIn.social({
-            provider:'github',
-            callbackURL:'/',
-        })
-
-        return toast.success('Sign Up Successfully')
+            return toast.success('Sign Up Successfully')
+        }
+        catch(e:unknown){
+            console.log(e)
+            return toast.error('Unable to Login with Github')
+        }
 
     }
 
@@ -147,6 +153,7 @@ export default function SignUp(){
                                 <div className="mt-6 space-y-2">
 
                                     <Button
+                                    type="button"
                                     variant="outline"
                                     className="w-full flex items-center gap-2 justify-center border-blue-400 dark:border-blue-500 text-blue-900 dark:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900"
                                     onClick={handleGithubSignIn}

@@ -123,9 +123,10 @@ export default function SignUp(){
                                 <div className="mt-6 space-y-2">
 
                                     <Button
-                                    variant="outline"
-                                    className="w-full flex items-center gap-2 justify-center border-blue-300 dark:border-blue-500 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-700"
-                                    onClick={handleGithubSignIn}
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full flex items-center gap-2 justify-center border-blue-300 dark:border-blue-500 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-700"
+                                        onClick={handleGithubSignIn}
                                     >
                                     <BsGithub className="w-5 h-5" />
                                         Continue with GitHub
