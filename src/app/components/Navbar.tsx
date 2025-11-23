@@ -6,6 +6,7 @@ import { ModeToggle } from "./Toggler"
 import toast from "react-hot-toast"
 import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
+import Skeleton from "react-loading-skeleton"
 
 interface user {
     name ?: string,
@@ -16,11 +17,16 @@ export default function Navbar(){
 
     const session = authClient.useSession();
     const router = useRouter()
-
+    const [loading, setLoading] = useState<boolean>(true)
     const [loggedIn, setloggedIn] = useState(false)
     const [user, setUser] = useState<user | null>()
 
     useEffect(() => {
+
+        if(!session.isPending){
+            setLoading(false)
+        }
+
         if(session.data?.user){
             setloggedIn(true);
             setUser({
@@ -31,11 +37,13 @@ export default function Navbar(){
     }, [session])
 
     const handleSignOut = async () => {
-        
+
         await authClient.signOut().then(() => {
             toast.success('Signed Out Successfully')
             return router.replace('/login')
         })
+
+        window.location.reload();
 
     }
 
@@ -60,21 +68,35 @@ export default function Navbar(){
                     }
                     <ModeToggle/>
                     {
-                    !loggedIn && <Link href="/login">
-                        <Button variant="outline" className="text-base">Login</Button>
-                    </Link>}
-                    {
-                        !loggedIn && <Link href="/signup">
-                            <Button className="text-base bg-blue-600 hover:bg-blue-700 text-white">
-                                Signup
-                            </Button>
-                        </Link>
-                    }
-                    {
-                    loggedIn && 
-                        <Button onClick={handleSignOut} className="text-base bg-blue-600 hover:bg-blue-700 text-white">
-                            Logout
-                        </Button>
+                    loading ?
+                        <div className=" w-32">
+                            <Skeleton 
+                                height={25}
+                                baseColor="transparent"
+                                highlightColor="#D1D5DB"
+                            />
+                        </div>
+                        :
+                        <div>
+                            {
+                                !loggedIn && <Link href="/login">
+                                    <Button variant="outline" className="text-base mr-3">Login</Button>
+                                </Link>
+                            }
+                            {
+                                !loggedIn && <Link href="/signup">
+                                    <Button className="text-base bg-blue-600 hover:bg-blue-700 text-white">
+                                        Signup
+                                    </Button>
+                                </Link>
+                            }
+                            {
+                            loggedIn && 
+                                <Button onClick={handleSignOut} className="text-base bg-blue-600 hover:bg-blue-700 text-white">
+                                    Logout
+                                </Button>
+                            }
+                        </div>
                     }
                 </div>
             </div>

@@ -52,7 +52,7 @@ export default function ContributionForm() {
 
   useEffect(() => {
 
-    if(session?.data !== null){
+    if(session.isPending === false){
       setPageLoading(false)
     }
 
@@ -83,11 +83,13 @@ export default function ContributionForm() {
     formData.append('video',data.video?.[0] || '')
 
     if(!data.image?.length && !data.video?.length){
+
       form.reset()
       setLoading(false)
       
       toast.error('Please Provide the Media')
       return false
+
     }
     
 
